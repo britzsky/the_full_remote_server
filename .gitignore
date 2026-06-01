@@ -1,0 +1,13 @@
+.gradle/
+build/
+target/
+
+*.log
+*.out.log
+*.err.log
+
+.env
+.env.*
+
+.DS_Store
+Thumbs.db
