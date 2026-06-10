@@ -48,6 +48,12 @@ public class ControlWebSocketHandler extends TextWebSocketHandler {
             send(session, error("INVALID_AGENT_ID", "agentId is required"));
             return;
         }
+        WebSocketSession existing = agents.get(agentId);
+        if (existing != null && existing.isOpen() && !existing.getId().equals(session.getId())) {
+            send(session, error("AGENT_ID_IN_USE", "Agent ID is already in use: " + agentId));
+            session.close(CloseStatus.POLICY_VIOLATION);
+            return;
+        }
         agents.put(agentId, session);
         sessionAgentId.put(session.getId(), agentId);
         sessionRole.put(session.getId(), "AGENT");
@@ -92,7 +98,7 @@ public class ControlWebSocketHandler extends TextWebSocketHandler {
         if (agentId == null || role == null) return;
 
         if ("AGENT".equals(role)) {
-            agents.remove(agentId);
+            agents.remove(agentId, session);
             forwardToAdmins(agentId, json("AGENT_OFFLINE", agentId, "offline"));
         } else {
             Set<WebSocketSession> admins = adminsByAgent.get(agentId);
