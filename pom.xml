@@ -25,6 +25,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>remote-server-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
